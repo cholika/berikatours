@@ -187,6 +187,10 @@ dialog::backdrop{background:rgba(15,22,18,.6);backdrop-filter:blur(3px)}
 .sample{position:absolute;top:14px;inset-inline-end:14px;font-size:.7rem;font-weight:700;color:#9a6a1c;background:#fbeed3;padding:2px 8px;border-radius:999px}
 @media (max-width:860px){.reviews{grid-template-columns:1fr}}
 
+.comments{margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.reviews:empty{display:none}
+@media (max-width:520px){.comments{padding:14px}}
+
 /* booking */
 .book-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:44px;margin-top:10px;align-items:start}
 .c-list{display:grid;gap:12px;margin-top:24px}
@@ -347,7 +351,9 @@ footer .brand{color:#fff}
   <div class="wrap">
     <div class="eyebrow" data-i="rev_eyebrow"></div>
     <h2 data-i="rev_title"></h2>
+    <p class="lead" data-i="rev_text"></p>
     <div class="reviews" id="reviewList"></div>
+    <div class="comments" id="commentsBox"><div id="disqus_thread"><p style="color:var(--muted);text-align:center;margin:8px 0">💬 …</p></div></div>
   </div>
 </section>
 
@@ -425,6 +431,9 @@ const CONFIG = {
     tours:  ["kazbegi.jpg", "kakheti.jpg", "mtskheta.jpg", "borjomi.jpg", "svaneti.jpg", "batumi.jpg", "kutaisi.jpg", "tbilisi.jpg"],
     gallery:["gallery-1.jpg", "gallery-2.jpg", "gallery-3.jpg", "gallery-4.jpg", "gallery-5.jpg", "gallery-6.jpg", "gallery-7.jpg"]
   },
+
+  // Disqus კომენტარები: disqus.com-ზე დარეგისტრირებული საიტის „shortname“. ცარიელი = კომენტარები გამორთულია
+  disqus: "berikatours",
 
   // შეფასებები — sample:true ნიშნავს „ნიმუშს“; რეალურით ჩანაცვლების შემდეგ წაშალეთ sample
   reviews: [
@@ -561,7 +570,7 @@ en:{dir:"ltr",
  tours_eyebrow:"Popular destinations",tours_title:"Where shall we go?",tours_text:"Some of the most requested tours. Any route can be changed or combined.",
  tour_ask:"Ask the price",custom_text:"Have your own idea or planning a multi-day trip? Let's plan it together!",btn_plan:"Plan my trip",
  gal_eyebrow:"Gallery",gal_title:"Moments from our trips",
- rev_eyebrow:"Reviews",rev_title:"What travellers say",sample:"Sample",
+ rev_eyebrow:"Reviews",rev_text:"Share your impressions — sign in with Facebook, Google or Apple and leave a comment.",rev_title:"What travellers say",sample:"Sample",
  book_eyebrow:"Booking",book_title:"Book your tour",book_text:"Fill in the form and send it via WhatsApp or email — or contact me directly. I reply quickly.",
  call:"Call",fl_name:"Your name",fl_phone:"Phone / WhatsApp",fl_date:"Date",fl_people:"Passengers",fl_route:"Tour",fl_route_any:"Other / custom route",fl_note:"Comment (hotel, wishes…)",
  send_wa:"Send via WhatsApp",send_mail:"Send by email",form_err:"Please enter your name and date.",
@@ -585,7 +594,7 @@ ru:{dir:"ltr",
  tours_eyebrow:"Популярные направления",tours_title:"Куда поедем?",tours_text:"Самые популярные туры. Любой маршрут можно изменить или объединить.",
  tour_ask:"Узнать цену",custom_text:"Есть своя идея или планируете многодневный тур? Спланируем вместе!",btn_plan:"Спланировать поездку",
  gal_eyebrow:"Галерея",gal_title:"Моменты наших поездок",
- rev_eyebrow:"Отзывы",rev_title:"Что говорят путешественники",sample:"Образец",
+ rev_eyebrow:"Отзывы",rev_text:"Поделитесь впечатлениями — войдите через Facebook, Google или Apple и оставьте комментарий.",rev_title:"Что говорят путешественники",sample:"Образец",
  book_eyebrow:"Бронирование",book_title:"Забронируйте тур",book_text:"Заполните форму и отправьте через WhatsApp или по почте — или свяжитесь напрямую. Отвечаю быстро.",
  call:"Позвонить",fl_name:"Ваше имя",fl_phone:"Телефон / WhatsApp",fl_date:"Дата",fl_people:"Пассажиры",fl_route:"Тур",fl_route_any:"Другой / свой маршрут",fl_note:"Комментарий (отель, пожелания…)",
  send_wa:"Отправить в WhatsApp",send_mail:"Отправить на почту",form_err:"Пожалуйста, укажите имя и дату.",
@@ -609,7 +618,7 @@ ka:{dir:"ltr",
  tours_eyebrow:"პოპულარული მიმართულებები",tours_title:"სად წავიდეთ?",tours_text:"ყველაზე მოთხოვნადი ტურები. ნებისმიერი მარშრუტის შეცვლა ან გაერთიანება შეიძლება.",
  tour_ask:"ფასის გაგება",custom_text:"გაქვს შენი იდეა ან გეგმავ რამდენიმედღიან ტურს? ერთად დავგეგმოთ!",btn_plan:"მოგზაურობის დაგეგმვა",
  gal_eyebrow:"გალერეა",gal_title:"კადრები ჩვენი მოგზაურობებიდან",
- rev_eyebrow:"შეფასებები",rev_title:"რას ამბობენ მოგზაურები",sample:"ნიმუში",
+ rev_eyebrow:"შეფასებები",rev_text:"გაგვიზიარე შთაბეჭდილება — შედი Facebook-ით, Google-ით ან Apple-ით და დატოვე კომენტარი.",rev_title:"რას ამბობენ მოგზაურები",sample:"ნიმუში",
  book_eyebrow:"დაჯავშნა",book_title:"დაჯავშნე ტური",book_text:"შეავსე ფორმა და გამოგზავნე WhatsApp-ით ან ელ-ფოსტით — ან დამიკავშირდი პირდაპირ. სწრაფად გიპასუხებ.",
  call:"დარეკვა",fl_name:"სახელი",fl_phone:"ტელეფონი / WhatsApp",fl_date:"თარიღი",fl_people:"მგზავრები",fl_route:"ტური",fl_route_any:"სხვა / საკუთარი მარშრუტი",fl_note:"კომენტარი (სასტუმრო, სურვილები…)",
  send_wa:"გაგზავნა WhatsApp-ით",send_mail:"გაგზავნა ელ-ფოსტით",form_err:"გთხოვთ, მიუთითოთ სახელი და თარიღი.",
@@ -633,7 +642,7 @@ ar:{dir:"rtl",
  tours_eyebrow:"وجهات شائعة",tours_title:"إلى أين نذهب؟",tours_text:"بعض الجولات الأكثر طلبًا. يمكن تعديل أي مسار أو دمجه.",
  tour_ask:"اسأل عن السعر",custom_text:"لديك فكرتك الخاصة أو تخطط لرحلة لعدة أيام؟ لنخطط لها معًا!",btn_plan:"خطط رحلتي",
  gal_eyebrow:"معرض الصور",gal_title:"لحظات من رحلاتنا",
- rev_eyebrow:"الآراء",rev_title:"ماذا يقول المسافرون",sample:"نموذج",
+ rev_eyebrow:"الآراء",rev_text:"شاركنا انطباعك — سجّل الدخول عبر فيسبوك أو جوجل أو آبل واترك تعليقًا.",rev_title:"ماذا يقول المسافرون",sample:"نموذج",
  book_eyebrow:"الحجز",book_title:"احجز جولتك",book_text:"املأ النموذج وأرسله عبر واتساب أو البريد الإلكتروني — أو تواصل معي مباشرة. أرد بسرعة.",
  call:"اتصال",fl_name:"اسمك",fl_phone:"الهاتف / واتساب",fl_date:"التاريخ",fl_people:"عدد الركاب",fl_route:"الجولة",fl_route_any:"مسار آخر / خاص",fl_note:"ملاحظة (الفندق، الرغبات…)",
  send_wa:"إرسال عبر واتساب",send_mail:"إرسال بالبريد",form_err:"يرجى إدخال الاسم والتاريخ.",
@@ -657,7 +666,7 @@ he:{dir:"rtl",
  tours_eyebrow:"יעדים פופולריים",tours_title:"לאן נוסעים?",tours_text:"חלק מהסיורים המבוקשים ביותר. אפשר לשנות או לשלב כל מסלול.",
  tour_ask:"בררו מחיר",custom_text:"יש לכם רעיון משלכם או מתכננים טיול של כמה ימים? בואו נתכנן יחד!",btn_plan:"תכננו את הטיול שלי",
  gal_eyebrow:"גלריה",gal_title:"רגעים מהטיולים שלנו",
- rev_eyebrow:"המלצות",rev_title:"מה המטיילים אומרים",sample:"דוגמה",
+ rev_eyebrow:"המלצות",rev_text:"שתפו את החוויה — התחברו עם פייסבוק, גוגל או אפל והשאירו תגובה.",rev_title:"מה המטיילים אומרים",sample:"דוגמה",
  book_eyebrow:"הזמנה",book_title:"הזמינו את הסיור שלכם",book_text:"מלאו את הטופס ושלחו בוואטסאפ או במייל — או צרו קשר ישירות. אני עונה מהר.",
  call:"התקשרו",fl_name:"השם שלכם",fl_phone:"טלפון / וואטסאפ",fl_date:"תאריך",fl_people:"נוסעים",fl_route:"סיור",fl_route_any:"מסלול אחר / מותאם",fl_note:"הערה (מלון, בקשות…)",
  send_wa:"שליחה בוואטסאפ",send_mail:"שליחה במייל",form_err:"נא להזין שם ותאריך.",
@@ -728,7 +737,9 @@ function render(){
   }
   // reviews — sample-ები საჯაროდ არ ჩანს; თუ რეალური არ არის, სექცია იმალება
   const realReviews=CONFIG.reviews.filter(r=>!r.sample);
-  $("#reviews").hidden=!realReviews.length; $('.nav-links a[href="#reviews"]').hidden=!realReviews.length;
+  const showRev=realReviews.length||CONFIG.disqus;
+  $("#reviews").hidden=!showRev; $('.nav-links a[href="#reviews"]').hidden=!showRev;
+  loadComments();
   $("#reviewList").innerHTML=realReviews.map(r=>`<div class="review">${r.sample?`<span class="sample">${esc(t.sample)}</span>`:""}
     <div class="stars">★★★★★</div><blockquote>“${esc(r.text)}”</blockquote>
     <div class="who"><span class="av">${esc(r.name[0])}</span><div><b>${esc(r.name)}</b><span>${esc(r.from)}</span></div></div></div>`).join("");
@@ -737,6 +748,21 @@ function render(){
   sel.innerHTML=TOURS[L].map(r=>`<option>${esc(r.t)}</option>`).join("")+`<option>${esc(t.fl_route_any)}</option>`;
   if(prev>=0) sel.selectedIndex=prev;
   $("#lang").value=L;
+}
+// ---- Disqus comments (lazy: loads when the section comes into view) ----
+let dqLoaded=false, dqLang=null;
+function dqConfig(){ const lang=L; return function(){ this.page.url="https://berikatours.ge/"; this.page.identifier="berikatours-reviews"; this.language=lang; }; }
+function loadComments(){
+  if(!CONFIG.disqus) { $("#commentsBox").hidden=true; return; }
+  if(dqLoaded){ if(dqLang!==L && window.DISQUS){ dqLang=L; DISQUS.reset({reload:true,config:dqConfig()}); } return; }
+  if(loadComments.obs) return;
+  const start=()=>{ if(dqLoaded) return; dqLoaded=true; dqLang=L; window.disqus_config=dqConfig();
+    const sc=document.createElement("script"); sc.src="https://"+CONFIG.disqus+".disqus.com/embed.js";
+    sc.setAttribute("data-timestamp",+new Date()); document.body.appendChild(sc); };
+  if("IntersectionObserver" in window){
+    loadComments.obs=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ loadComments.obs.disconnect(); start(); } },{rootMargin:"400px"});
+    loadComments.obs.observe($("#commentsBox"));
+  } else start();
 }
 let curTour=null;
 function openTour(i){
