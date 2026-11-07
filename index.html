@@ -141,12 +141,40 @@ h2{font-size:clamp(1.65rem,3.6vw,2.4rem);line-height:1.2;margin:10px 0 14px;font
 .custom{margin-top:26px;padding:22px 24px;border-radius:var(--r);background:linear-gradient(120deg,var(--green-d),var(--green));color:#fff;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
 .custom p{font-weight:600;font-size:1.05rem;max-width:620px}
 
+.tour{position:relative;transition:transform .15s}
+.tour:hover{transform:translateY(-3px)}
+.tour-open{position:absolute;inset:0;z-index:1;background:none;border:0;cursor:pointer}
+.tour-links{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.tour-links .ask{margin-top:0;position:relative;z-index:2}
+.more{font-size:.86rem;font-weight:700;color:var(--muted)}
+/* tour dialog */
+dialog{border:0;padding:0;margin:auto;border-radius:22px;width:min(720px,calc(100% - 24px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden}
+dialog::backdrop{background:rgba(15,22,18,.6);backdrop-filter:blur(3px)}
+.dlg-body{max-height:calc(100vh - 32px);overflow-y:auto}
+.dlg-img{height:260px}
+.dlg-text{padding:22px 24px 26px}
+.dlg-text h3{font-size:1.5rem;line-height:1.25;margin-bottom:14px}
+.dlg-text p{color:var(--muted);margin:16px 0}
+.dlg-text h4{font-size:1rem;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.chip small{display:block;font-size:.72rem;color:var(--muted);font-weight:600}
+.chip b{font-size:.9rem}
+.stops{list-style:none;counter-reset:st;display:grid}
+.stops li{counter-increment:st;display:flex;gap:12px;align-items:center;padding:7px 0;position:relative}
+.stops li::before{content:counter(st);flex:none;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:.8rem;font-weight:800;display:grid;place-items:center;position:relative;z-index:1}
+.stops li:not(:last-child)::after{content:"";position:absolute;inset-inline-start:12px;top:30px;height:calc(100% - 20px);width:2px;background:var(--line)}
+.dlg-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.dlg-close{position:absolute;top:12px;inset-inline-end:12px;z-index:5;width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;display:grid;place-items:center;cursor:pointer}
+.dlg-close svg{width:18px;height:18px}
+@media (max-width:520px){.dlg-img{height:190px}.dlg-text{padding:18px}.dlg-actions .btn{flex:1}}
+
 /* gallery */
-.gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:170px;gap:12px;margin-top:36px}
-.gallery .ph{border-radius:14px}
-.gallery .ph:nth-child(1){grid-column:span 2;grid-row:span 2}
-.gallery .ph:nth-child(4){grid-row:span 2}
-@media (max-width:700px){.gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px}.gallery .ph:nth-child(4){grid-row:auto}}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:36px}
+.gallery a{display:block;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--soft)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.gallery a:hover img{transform:scale(1.04)}
+@media (max-width:700px){.gallery{grid-template-columns:repeat(2,1fr);gap:8px}}
 
 /* reviews */
 .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
@@ -186,6 +214,9 @@ footer .brand{color:#fff}
 .f-bottom{padding-top:18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
 .f-domain{direction:ltr;font-weight:700;color:#fff}
 
+.f-credits{margin-top:12px;font-size:.72rem;color:#76827a}
+.f-credits a{text-decoration:underline}
+.credit{position:absolute;bottom:8px;inset-inline-end:10px;z-index:2;font-size:.7rem;color:#fff;background:rgba(0,0,0,.45);padding:2px 8px;border-radius:999px}
 .fab{position:fixed;inset-inline-end:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.28);z-index:50}
 .fab svg{width:30px;height:30px}
 </style>
@@ -357,8 +388,14 @@ footer .brand{color:#fff}
       <span data-i="footer"></span>
     </div>
     <div class="f-bottom"><span>© <span id="yr"></span> Berika Tours</span><span class="f-domain">berikatours.ge</span></div>
+    <div class="f-credits" id="credits"></div>
   </div>
 </footer>
+
+<dialog id="tourDlg">
+  <button class="dlg-close" onclick="this.closest('dialog').close()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="dlg-body"></div>
+</dialog>
 
 <a class="fab" data-href="wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="#fff"><use href="#i-wa"/></svg></a>
 
@@ -379,13 +416,14 @@ const CONFIG = {
   car:      "Mercedes-Benz Vito",    // მანქანის მოდელი
   flags:    "🇬🇪 🇬🇧 🇷🇺",            // ენები, რომლებზეც მძღოლი ლაპარაკობს
 
-  // ფოტოები: ჩაწერეთ ფაილის სახელი, მაგ. "photos/driver.jpg". ცარიელი = დროებითი ფონი
+  // ფოტოები: ატვირთეთ GitHub-ზე ზუსტად ამ სახელებით — საიტზე თავისით გამოჩნდება.
+  // სანამ ფაილი არ არის, ჩანს ფერადი დროებითი ფონი.
   photos: {
-    hero:   "",
-    driver: "",
-    car:    ["", "", ""],
-    tours:  ["", "", "", "", "", "", "", ""],
-    gallery:["", "", "", "", "", "", ""]
+    hero:   "hero.jpg",
+    driver: "driver.jpg",
+    car:    ["car-1.jpg", "car-2.jpg", "car-3.jpg"],
+    tours:  ["kazbegi.jpg", "kakheti.jpg", "mtskheta.jpg", "borjomi.jpg", "svaneti.jpg", "batumi.jpg", "kutaisi.jpg", "tbilisi.jpg"],
+    gallery:["gallery-1.jpg", "gallery-2.jpg", "gallery-3.jpg", "gallery-4.jpg", "gallery-5.jpg", "gallery-6.jpg", "gallery-7.jpg"]
   },
 
   // შეფასებები — sample:true ნიშნავს „ნიმუშს“; რეალურით ჩანაცვლების შემდეგ წაშალეთ sample
@@ -397,6 +435,18 @@ const CONFIG = {
 };
 /* ===================================================================== */
 
+// საჯარო ლიცენზიის ფოტოები Wikimedia Commons-იდან — გამოიყენება, სანამ საკუთარი ფოტო (მაგ. kazbegi.jpg) არ აიტვირთება
+const WIKI={
+ hero:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Gergeti_Trinity_Church_and_Kuru_mountain_range_as_seen_from_Kazbek_slopes%2C_Georgia.jpg?width=1920",page:"https://commons.wikimedia.org/wiki/File:Gergeti_Trinity_Church_and_Kuru_mountain_range_as_seen_from_Kazbek_slopes%2C_Georgia.jpg"},
+ kazbegi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Kazbegi%2C_Gergeti_Trinity_Church_and_Mt_Kazbek_%2835959311351%29.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Kazbegi%2C_Gergeti_Trinity_Church_and_Mt_Kazbek_%2835959311351%29.jpg"},
+ kakheti:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Sighnaghi.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Sighnaghi.jpg"},
+ mtskheta:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Mtskheta%2C_Jvari_Monastery%2C_Church%2C_Walls%2C_Georgia.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Mtskheta%2C_Jvari_Monastery%2C_Church%2C_Walls%2C_Georgia.jpg"},
+ borjomi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Vardzia_%2835702172390%29.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Vardzia_%2835702172390%29.jpg"},
+ svaneti:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Ushguli_Svaneti_Georgia.JPG?width=1200",page:"https://commons.wikimedia.org/wiki/File:Ushguli_Svaneti_Georgia.JPG"},
+ batumi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Batumi_Skyline_%2831%29.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Batumi_Skyline_%2831%29.jpg"},
+ kutaisi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Martvili_Canyon%2C_Georgia._2018_%281%29.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Martvili_Canyon%2C_Georgia._2018_%281%29.jpg"},
+ tbilisi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Tbilisi._Old_Town_with_the_Narikali_Fortress_in_the_background.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Tbilisi._Old_Town_with_the_Narikali_Fortress_in_the_background.jpg"}
+};
 const TOUR_GRAD=[
  "linear-gradient(160deg,#5b7f99,#dfe7ee 55%,#6c8a5b)",
  "linear-gradient(160deg,#6e2a36,#b85a5a 50%,#d9b26f)",
@@ -407,6 +457,87 @@ const TOUR_GRAD=[
  "linear-gradient(160deg,#3c3a5c,#7d6f9c 50%,#c7b7a0)",
  "linear-gradient(160deg,#9b5d3a,#d79a63 50%,#efd5a8)"
 ];
+const TOURS={"en":[{"t":"Kazbegi & Gergeti","s":"Ananuri, Gudauri and Gergeti Trinity Church under Mount Kazbek.","d":"1 day","l":"One of the most beautiful roads in the Caucasus. We drive the Georgian Military Road past the turquoise Zhinvali Reservoir and through Gudauri, then climb to Gergeti Trinity Church (2,170 m), facing the glacier of Mount Kazbek (5,054 m).","stops":["Zhinvali Reservoir","Ananuri Fortress","Gudauri & Friendship Monument","Stepantsminda","Gergeti Trinity Church"],
+"season":"All year (best May–October)"},
+ {"t":"Kakheti — wine region","s":"Sighnaghi, Bodbe, wine tasting and Alazani Valley views.","d":"1 day","l":"Georgia's 8,000-year-old wine tradition. We visit the walled hilltop town of Sighnaghi, St. Nino's Monastery in Bodbe, and taste wine made in traditional qvevri clay jars at a family cellar.","stops":["Sighnaghi & city walls","Bodbe Monastery","Family wine cellar — qvevri tasting","Alazani Valley viewpoint","Telavi (optional)"],
+"season":"All year (harvest: September–October)"},
+ {"t":"Mtskheta & Uplistsikhe","s":"The ancient capital, Jvari Monastery and a rock-cut cave city.","d":"1 day","l":"Georgia's spiritual heart and a UNESCO World Heritage site. See the 6th-century Jvari Monastery above the meeting of two rivers, Svetitskhoveli Cathedral, and the 3,000-year-old rock-cut town of Uplistsikhe.","stops":["Jvari Monastery","Svetitskhoveli Cathedral","Old Mtskheta","Gori","Uplistsikhe cave town"],
+"season":"All year"},
+ {"t":"Borjomi & Vardzia","s":"Mineral springs, Rabati Castle and the cave monastery.","d":"1–2 days","l":"Through green mountains to the famous Borjomi park with its mineral springs, the restored Rabati Castle in Akhaltsikhe, and the 12th-century cave monastery of Vardzia, carved into a cliff in the time of Queen Tamar.","stops":["Borjomi Park & springs","Rabati Castle","Khertvisi Fortress","Vardzia cave monastery"],
+"season":"All year"},
+ {"t":"Svaneti — Mestia & Ushguli","s":"Medieval towers, glaciers and one of Europe's highest villages.","d":"2–4 days","l":"Georgia's most dramatic region: medieval Svan stone towers, snowy peaks and glaciers. Ushguli (about 2,100 m), at the foot of Mount Shkhara, is one of the highest permanently inhabited villages in Europe.","stops":["Enguri Dam","Mestia & Svan towers","Svaneti Museum","Ushguli","Chalaadi Glacier (hike)"],
+"season":"May–October"},
+ {"t":"Batumi & the Black Sea","s":"Seaside city, Botanical Garden and Machakhela valley.","d":"2–3 days","l":"A subtropical seaside city with a palm-lined boulevard, modern architecture and one of the largest botanical gardens in the region. Combine it with the green Machakhela valley and the old arched stone bridges of Adjara.","stops":["Batumi Boulevard & Old Town","Ali & Nino statue","Botanical Garden","Gonio Fortress","Makhuntseti Waterfall"],
+"season":"Best June–September"},
+ {"t":"Kutaisi & Prometheus Cave","s":"Gelati Monastery, Prometheus Cave and Martvili Canyon.","d":"1–2 days","l":"West Georgia's nature and history in one trip: the UNESCO-listed Gelati Monastery, the illuminated halls of Prometheus Cave, and a boat ride through the emerald Martvili Canyon.","stops":["Gelati Monastery","Bagrati Cathedral","Prometheus Cave","Martvili Canyon","Okatse Canyon (optional)"],
+"season":"All year"},
+ {"t":"Tbilisi city tour","s":"Old Town, sulfur baths and Narikala Fortress.","d":"½ day","l":"Get to know the capital: the colourful carved balconies of the Old Town, the sulfur baths of Abanotubani, Narikala Fortress with its cable car, and the Bridge of Peace.","stops":["Metekhi Church","Abanotubani sulfur baths","Narikala Fortress & cable car","Bridge of Peace","Rustaveli Avenue"],
+"season":"All year"}],
+"ru":[{"t":"Казбеги и Гергети","s":"Ананури, Гудаури и церковь Гергети у подножия Казбека.","d":"1 день","l":"Одна из самых красивых дорог Кавказа. По Военно-Грузинской дороге мимо бирюзового Жинвальского водохранилища, через Гудаури — к церкви Гергети (2170 м) с видом на ледник Казбека (5054 м).","stops":["Жинвальское водохранилище","Крепость Ананури","Гудаури и Арка дружбы","Степанцминда","Церковь Гергети"],
+"season":"Круглый год (лучше май–октябрь)"},
+ {"t":"Кахетия — винный край","s":"Сигнахи, Бодбе, дегустация вина и Алазанская долина.","d":"1 день","l":"8000-летняя винная традиция Грузии. Город-крепость Сигнахи, монастырь Святой Нино в Бодбе и дегустация вина из квеври в семейном марани.","stops":["Сигнахи и крепостная стена","Монастырь Бодбе","Семейный марани — дегустация","Вид на Алазанскую долину","Телави (по желанию)"],
+"season":"Круглый год (ртвели: сентябрь–октябрь)"},
+ {"t":"Мцхета и Уплисцихе","s":"Древняя столица, монастырь Джвари и пещерный город.","d":"1 день","l":"Духовное сердце Грузии и объект ЮНЕСКО. Монастырь Джвари VI века над слиянием двух рек, собор Светицховели и 3000-летний пещерный город Уплисцихе.","stops":["Монастырь Джвари","Собор Светицховели","Старая Мцхета","Гори","Уплисцихе"],
+"season":"Круглый год"},
+ {"t":"Боржоми и Вардзия","s":"Минеральные источники, крепость Рабат и пещерный монастырь.","d":"1–2 дня","l":"Через зелёные горы — к знаменитому парку Боржоми с минеральными источниками, крепости Рабат в Ахалцихе и пещерному монастырю Вардзия XII века, высеченному в скале при царице Тамар.","stops":["Парк Боржоми и источники","Крепость Рабат","Крепость Хертвиси","Вардзия"],
+"season":"Круглый год"},
+ {"t":"Сванетия — Местиа и Ушгули","s":"Башни, ледники и одно из самых высоких сёл Европы.","d":"2–4 дня","l":"Самый впечатляющий край Грузии: средневековые сванские башни, снежные вершины и ледники. Ушгули (около 2100 м) у подножия Шхары — одно из самых высоких постоянно населённых сёл Европы.","stops":["Ингурская ГЭС","Местиа и сванские башни","Музей Сванетии","Ушгули","Ледник Чалаади (поход)"],
+"season":"Май–октябрь"},
+ {"t":"Батуми и Чёрное море","s":"Приморский город, Ботанический сад, Мачахельское ущелье.","d":"2–3 дня","l":"Субтропический приморский город с пальмовым бульваром, современной архитектурой и одним из крупнейших ботанических садов региона. Можно совместить с зелёным Мачахельским ущельем и арочными мостами Аджарии.","stops":["Бульвар и Старый город","Али и Нино","Ботанический сад","Крепость Гонио","Водопад Махунцети"],
+"season":"Лучше июнь–сентябрь"},
+ {"t":"Кутаиси и пещера Прометея","s":"Гелати, пещера Прометея и каньон Мартвили.","d":"1–2 дня","l":"Природа и история Западной Грузии за одну поездку: монастырь Гелати (ЮНЕСКО), подсвеченные залы пещеры Прометея и прогулка на лодке по изумрудному каньону Мартвили.","stops":["Монастырь Гелати","Храм Баграти","Пещера Прометея","Каньон Мартвили","Каньон Окаце (по желанию)"],
+"season":"Круглый год"},
+ {"t":"Экскурсия по Тбилиси","s":"Старый город, серные бани и крепость Нарикала.","d":"½ дня","l":"Познакомьтесь со столицей: резные балконы Старого города, серные бани Абанотубани, крепость Нарикала с канатной дорогой и Мост Мира.","stops":["Церковь Метехи","Серные бани Абанотубани","Нарикала и канатная дорога","Мост Мира","Проспект Руставели"],
+"season":"Круглый год"}],
+"ka":[{"t":"ყაზბეგი და გერგეტი","s":"ანანური, გუდაური და გერგეტის სამება მყინვარწვერის ძირში.","d":"1 დღე","l":"კავკასიის ერთ-ერთი ულამაზესი გზა. საქართველოს სამხედრო გზით ჩავუვლით ფირუზისფერ ჟინვალის წყალსაცავს, გავივლით გუდაურს და ავალთ გერგეტის სამებამდე (2170 მ), რომელიც მყინვარწვერის (5054 მ) მყინვარს გადაჰყურებს.","stops":["ჟინვალის წყალსაცავი","ანანურის ციხე","გუდაური და მეგობრობის მონუმენტი","სტეფანწმინდა","გერგეტის სამება"],
+"season":"მთელი წელი (საუკეთესო მაისი–ოქტომბერი)"},
+ {"t":"კახეთი — ღვინის მხარე","s":"სიღნაღი, ბოდბე, ღვინის დეგუსტაცია და ალაზნის ველი.","d":"1 დღე","l":"საქართველოს 8000-წლიანი ღვინის ტრადიცია. ვესტუმრებით გალავნიან სიღნაღს, წმინდა ნინოს ბოდბის მონასტერს და ოჯახურ მარანში დავაგემოვნებთ ქვევრის ღვინოს.","stops":["სიღნაღი და გალავანი","ბოდბის მონასტერი","ოჯახური მარანი — ქვევრის ღვინის დეგუსტაცია","ალაზნის ველის ხედი","თელავი (სურვილისამებრ)"],
+"season":"მთელი წელი (რთველი: სექტემბერი–ოქტომბერი)"},
+ {"t":"მცხეთა და უფლისციხე","s":"ძველი დედაქალაქი, ჯვრის მონასტერი და კლდეში ნაკვეთი ქალაქი.","d":"1 დღე","l":"საქართველოს სულიერი გული და UNESCO-ს მსოფლიო მემკვიდრეობის ძეგლი. ვნახავთ VI საუკუნის ჯვრის მონასტერს ორი მდინარის შესართავთან, სვეტიცხოველს და 3000 წლის კლდეში ნაკვეთ ქალაქ უფლისციხეს.","stops":["ჯვრის მონასტერი","სვეტიცხოვლის ტაძარი","ძველი მცხეთა","გორი","უფლისციხე"],
+"season":"მთელი წელი"},
+ {"t":"ბორჯომი და ვარძია","s":"მინერალური წყლები, რაბათის ციხე და კლდის მონასტერი.","d":"1–2 დღე","l":"მწვანე მთებით გარშემორტყმული ბორჯომის ცნობილი პარკი და მინერალური წყაროები, ახალციხის რაბათის ციხე და თამარ მეფის დროინდელი, XII საუკუნის კლდეში ნაკვეთი ვარძიის მონასტერი.","stops":["ბორჯომის პარკი და წყაროები","რაბათის ციხე","ხერთვისის ციხე","ვარძია"],
+"season":"მთელი წელი"},
+ {"t":"სვანეთი — მესტია და უშგული","s":"კოშკები, მყინვარები და ევროპის ერთ-ერთი უმაღლესი სოფელი.","d":"2–4 დღე","l":"საქართველოს ყველაზე შთამბეჭდავი მხარე: შუასაუკუნეების სვანური კოშკები, თოვლიანი მწვერვალები და მყინვარები. უშგული (დაახლ. 2100 მ) შხარის ძირში ევროპის ერთ-ერთი უმაღლესი მუდმივად დასახლებული სოფელია.","stops":["ენგურჰესის კაშხალი","მესტია და სვანური კოშკები","სვანეთის მუზეუმი","უშგული","ჭალაადის მყინვარი (ლაშქრობა)"],
+"season":"მაისი–ოქტომბერი"},
+ {"t":"ბათუმი და შავი ზღვა","s":"ზღვისპირა ქალაქი, ბოტანიკური ბაღი, მაჭახელას ხეობა.","d":"2–3 დღე","l":"სუბტროპიკული ზღვისპირა ქალაქი პალმებიანი ბულვარით, თანამედროვე არქიტექტურით და რეგიონის ერთ-ერთი უდიდესი ბოტანიკური ბაღით. შეიძლება შევუთავსოთ მწვანე მაჭახელას ხეობა და აჭარის ძველი თაღოვანი ხიდები.","stops":["ბათუმის ბულვარი და ძველი ქალაქი","ალი და ნინო","ბოტანიკური ბაღი","გონიოს ციხე","მახუნცეთის ჩანჩქერი"],
+"season":"საუკეთესო ივნისი–სექტემბერი"},
+ {"t":"ქუთაისი და პრომეთეს მღვიმე","s":"გელათი, პრომეთეს მღვიმე და მარტვილის კანიონი.","d":"1–2 დღე","l":"დასავლეთ საქართველოს ბუნება და ისტორია ერთ მოგზაურობაში: UNESCO-ს ძეგლი გელათის მონასტერი, პრომეთეს მღვიმის განათებული დარბაზები და ნავით გასეირნება ზურმუხტისფერ მარტვილის კანიონში.","stops":["გელათის მონასტერი","ბაგრატის ტაძარი","პრომეთეს მღვიმე","მარტვილის კანიონი","ოკაცეს კანიონი (სურვილისამებრ)"],
+"season":"მთელი წელი"},
+ {"t":"თბილისის ტური","s":"ძველი თბილისი, გოგირდის აბანოები და ნარიყალა.","d":"½ დღე","l":"გაიცანი დედაქალაქი: ძველი თბილისის ფერადი აივნები, აბანოთუბნის გოგირდის აბანოები, ნარიყალას ციხე საბაგიროთი და მშვიდობის ხიდი.","stops":["მეტეხის ეკლესია","აბანოთუბანი","ნარიყალა და საბაგირო","მშვიდობის ხიდი","რუსთაველის გამზირი"],
+"season":"მთელი წელი"}],
+"ar":[{"t":"كازبيغي وغيرغيتي","s":"أنانوري وغوداوري وكنيسة الثالوث في غيرغيتي عند سفح جبل كازبيك.","d":"يوم واحد","l":"من أجمل الطرق في القوقاز. نسير على الطريق العسكري الجورجي مرورًا بخزان جينفالي الفيروزي وغوداوري، ثم نصعد إلى كنيسة الثالوث في غيرغيتي (2170 م) المطلة على نهر كازبيك الجليدي (5054 م).","stops":["خزان جينفالي","قلعة أنانوري","غوداوري ونصب الصداقة","ستيبانتسميندا","كنيسة الثالوث في غيرغيتي"],
+"season":"طوال العام (الأفضل من مايو إلى أكتوبر)"},
+ {"t":"كاخيتي — منطقة النبيذ","s":"سيغناغي وبودبي وتذوق النبيذ وإطلالات وادي ألازاني.","d":"يوم واحد","l":"تقليد صناعة النبيذ في جورجيا عمره 8000 عام. نزور بلدة سيغناغي المسوّرة ودير القديسة نينو في بودبي، ونتذوق نبيذ القفيفري في قبو عائلي.","stops":["سيغناغي وأسوارها","دير بودبي","قبو عائلي — تذوق النبيذ","إطلالة وادي ألازاني","تيلافي (اختياري)"],
+"season":"طوال العام (موسم القطاف: سبتمبر–أكتوبر)"},
+ {"t":"متسخيتا وأوبليستسيخي","s":"العاصمة القديمة ودير جفاري ومدينة الكهوف.","d":"يوم واحد","l":"القلب الروحي لجورجيا وموقع تراث عالمي لليونسكو. نرى دير جفاري من القرن السادس فوق ملتقى نهرين، وكاتدرائية سفيتيتسخوفيلي، ومدينة أوبليستسيخي المنحوتة في الصخر منذ 3000 عام.","stops":["دير جفاري","كاتدرائية سفيتيتسخوفيلي","متسخيتا القديمة","غوري","أوبليستسيخي"],
+"season":"طوال العام"},
+ {"t":"بورجومي وفاردزيا","s":"الينابيع المعدنية وقلعة رباط ودير الكهوف.","d":"1–2 أيام","l":"رحلة عبر الجبال الخضراء إلى حديقة بورجومي الشهيرة وينابيعها المعدنية، وقلعة رباط في أخالتسيخي، ودير فاردزيا المنحوت في الصخر من القرن الثاني عشر في عهد الملكة تامار.","stops":["حديقة بورجومي والينابيع","قلعة رباط","قلعة خيرتفيسي","فاردزيا"],
+"season":"طوال العام"},
+ {"t":"سفانيتي — ميستيا وأوشغولي","s":"أبراج قديمة وأنهار جليدية وإحدى أعلى القرى في أوروبا.","d":"2–4 أيام","l":"أكثر مناطق جورجيا روعة: أبراج سفانية من العصور الوسطى وقمم مكسوة بالثلوج وأنهار جليدية. أوشغولي (نحو 2100 م) عند سفح جبل شخارا من أعلى القرى المأهولة في أوروبا.","stops":["سد إنغوري","ميستيا والأبراج السفانية","متحف سفانيتي","أوشغولي","نهر تشالاادي الجليدي (مشي)"],
+"season":"من مايو إلى أكتوبر"},
+ {"t":"باتومي والبحر الأسود","s":"مدينة ساحلية والحديقة النباتية ووادي ماتشاخيلا.","d":"2–3 أيام","l":"مدينة ساحلية شبه استوائية بكورنيش تزينه النخيل وعمارة حديثة وواحدة من أكبر الحدائق النباتية في المنطقة. يمكن دمجها مع وادي ماتشاخيلا الأخضر والجسور الحجرية القديمة في أجاريا.","stops":["كورنيش باتومي والمدينة القديمة","تمثال علي ونينو","الحديقة النباتية","قلعة غونيو","شلال ماخونتسيتي"],
+"season":"الأفضل من يونيو إلى سبتمبر"},
+ {"t":"كوتايسي وكهف بروميثيوس","s":"دير جيلاتي وكهف بروميثيوس ووادي مارتفيلي.","d":"1–2 أيام","l":"طبيعة وتاريخ غرب جورجيا في رحلة واحدة: دير جيلاتي المدرج في قائمة اليونسكو، وقاعات كهف بروميثيوس المضاءة، وجولة بالقارب في وادي مارتفيلي الزمردي.","stops":["دير جيلاتي","كاتدرائية باغراتي","كهف بروميثيوس","وادي مارتفيلي","وادي أوكاتسي (اختياري)"],
+"season":"طوال العام"},
+ {"t":"جولة في تبليسي","s":"المدينة القديمة والحمامات الكبريتية وقلعة ناريكالا.","d":"نصف يوم","l":"تعرّف على العاصمة: الشرفات الملونة في المدينة القديمة، وحمامات الكبريت في أبانوتوباني، وقلعة ناريكالا مع التلفريك، وجسر السلام.","stops":["كنيسة ميتيخي","حمامات أبانوتوباني","قلعة ناريكالا والتلفريك","جسر السلام","شارع روستافيلي"],
+"season":"طوال العام"}],
+"he":[{"t":"קזבגי וגרגטי","s":"אננורי, גודאורי וכנסיית השילוש בגרגטי למרגלות הר קזבק.","d":"יום אחד","l":"אחת הדרכים היפות בקווקז. ניסע בדרך הצבאית הגאורגית לאורך מאגר ז'ינוואלי הטורקיזי, דרך גודאורי, ונעלה לכנסיית השילוש בגרגטי (2,170 מ') מול הקרחון של הר קזבק (5,054 מ').","stops":["מאגר ז'ינוואלי","מבצר אננורי","גודאורי ואנדרטת הידידות","סטפנצמינדה","כנסיית השילוש בגרגטי"],
+"season":"כל השנה (הכי טוב מאי–אוקטובר)"},
+ {"t":"קחטי — אזור היין","s":"סיגנאגי, בודבה, טעימות יין ונופי עמק אלזני.","d":"יום אחד","l":"מסורת יין בת 8,000 שנה. נבקר בעיירה המוקפת חומה סיגנאגי, במנזר נינו הקדושה בבודבה, ונטעם יין קווברי במרתף משפחתי.","stops":["סיגנאגי והחומות","מנזר בודבה","מרתף משפחתי — טעימות יין","תצפית על עמק אלזני","תלאווי (לבחירה)"],
+"season":"כל השנה (בציר: ספטמבר–אוקטובר)"},
+ {"t":"מצחטה ואופליסציחה","s":"הבירה העתיקה, מנזר ג'ווארי ועיר המערות.","d":"יום אחד","l":"הלב הרוחני של גאורגיה ואתר מורשת עולמית של אונסק\"ו. נראה את מנזר ג'ווארי מהמאה ה-6 מעל מפגש שני נהרות, את קתדרלת סבטיצחובלי ואת עיר המערות אופליסציחה בת 3,000 השנים.","stops":["מנזר ג'ווארי","קתדרלת סבטיצחובלי","מצחטה העתיקה","גורי","אופליסציחה"],
+"season":"כל השנה"},
+ {"t":"בורג'ומי ווארדזיה","s":"מעיינות מינרליים, מבצר רבאטי ומנזר המערות.","d":"1–2 ימים","l":"דרך הרים ירוקים אל הפארק המפורסם של בורג'ומי ומעיינות המים המינרליים, מבצר רבאטי באחלציחה ומנזר המערות וארדזיה מהמאה ה-12, שנחצב בצוק בימי המלכה תמר.","stops":["פארק בורג'ומי והמעיינות","מבצר רבאטי","מבצר חרטוויסי","וארדזיה"],
+"season":"כל השנה"},
+ {"t":"סוואנטי — מסטיה ואושגולי","s":"מגדלים עתיקים, קרחונים ואחד הכפרים הגבוהים באירופה.","d":"2–4 ימים","l":"האזור המרשים ביותר בגאורגיה: מגדלי אבן מימי הביניים, פסגות מושלגות וקרחונים. אושגולי (כ-2,100 מ') למרגלות הר שחרה הוא אחד הכפרים המיושבים הגבוהים באירופה.","stops":["סכר אנגורי","מסטיה ומגדלי סוואנטי","מוזיאון סוואנטי","אושגולי","קרחון צ'לאדי (טיול רגלי)"],
+"season":"מאי–אוקטובר"},
+ {"t":"בטומי והים השחור","s":"עיר חוף, הגן הבוטני ועמק מצ'חלה.","d":"2–3 ימים","l":"עיר חוף סובטרופית עם טיילת דקלים, אדריכלות מודרנית ואחד הגנים הבוטניים הגדולים באזור. אפשר לשלב עם עמק מצ'חלה הירוק וגשרי האבן העתיקים של אג'אריה.","stops":["הטיילת והעיר העתיקה","פסל עלי ונינו","הגן הבוטני","מבצר גוניו","מפל מחונצטי"],
+"season":"הכי טוב יוני–ספטמבר"},
+ {"t":"כותאיסי ומערת פרומתאוס","s":"מנזר גלאטי, מערת פרומתאוס וקניון מרטווילי.","d":"1–2 ימים","l":"הטבע וההיסטוריה של מערב גאורגיה בטיול אחד: מנזר גלאטי (אונסק\"ו), אולמות מערת פרומתאוס המוארים ושיט בסירה בקניון מרטווילי בצבע אמרלד.","stops":["מנזר גלאטי","קתדרלת בגרטי","מערת פרומתאוס","קניון מרטווילי","קניון אוקצה (לבחירה)"],
+"season":"כל השנה"},
+ {"t":"סיור בטביליסי","s":"העיר העתיקה, מרחצאות הגופרית ומבצר נריקלה.","d":"חצי יום","l":"הכירו את הבירה: המרפסות הצבעוניות של העיר העתיקה, מרחצאות הגופרית באבנוטובני, מבצר נריקלה עם הרכבל וגשר השלום.","stops":["כנסיית מטחי","מרחצאות אבנוטובני","מבצר נריקלה והרכבל","גשר השלום","שדרות רוסתאוולי"],
+"season":"כל השנה"}]};
+const TOUR_META=[{km:155,h:"3"},{km:110,h:"2"},{km:90,h:"1.5"},{km:270,h:"4.5"},{km:470,h:"8"},{km:370,h:"5.5"},{km:230,h:"3.5"},null];
 const GAL_GRAD=["linear-gradient(135deg,#26445a,#6f97a8)","linear-gradient(135deg,#6e2a36,#c48a6a)","linear-gradient(135deg,#2f6b4f,#a3c4a8)","linear-gradient(135deg,#8a6b4f,#e0c49b)","linear-gradient(135deg,#334a63,#aebfcf)","linear-gradient(135deg,#1f6f8b,#9fd3df)","linear-gradient(135deg,#3f5f52,#c9a27a)"];
 
 const T = {
@@ -432,7 +563,7 @@ en:{dir:"ltr",
  send_wa:"Send via WhatsApp",send_mail:"Send by email",form_err:"Please enter your name and date.",
  msg_hello:"Hello! I'd like to book a tour.",msg_ask:"Hello! I'm interested in the tour: {tour}. What is the price?",
  footer:"Private tours in Georgia · up to 6 passengers",
- tours:[["Kazbegi & Gergeti","Ananuri, Gudauri and Gergeti Trinity Church under Mount Kazbek.","1 day"],["Kakheti — wine region","Sighnaghi, Bodbe, wine tasting and Alazani Valley views.","1 day"],["Mtskheta & Uplistsikhe","The ancient capital, Jvari Monastery and a rock-cut cave city.","1 day"],["Borjomi & Vardzia","Mineral springs, Rabati Castle and the cave monastery.","1–2 days"],["Svaneti — Mestia & Ushguli","Medieval towers, glaciers and one of Europe's highest villages.","2–4 days"],["Batumi & the Black Sea","Seaside city, Botanical Garden and Machakhela valley.","2–3 days"],["Kutaisi & Prometheus Cave","Gelati Monastery, Prometheus Cave and Martvili Canyon.","1–2 days"],["Tbilisi city tour","Old Town, sulfur baths and Narikala Fortress.","½ day"]]
+ more:"Details",route:"Route",from_tb:"from Tbilisi",season_l:"Season",dur_l:"Duration",dist_l:"Distance",book_this:"Book this tour",km:"km",hr:"h",close:"Close"
 },
 ru:{dir:"ltr",
  nav_about:"Обо мне",nav_car:"Машина",nav_tours:"Туры",nav_gallery:"Фото",nav_reviews:"Отзывы",nav_book:"Забронировать",
@@ -456,7 +587,7 @@ ru:{dir:"ltr",
  send_wa:"Отправить в WhatsApp",send_mail:"Отправить на почту",form_err:"Пожалуйста, укажите имя и дату.",
  msg_hello:"Здравствуйте! Хочу забронировать тур.",msg_ask:"Здравствуйте! Меня интересует тур: {tour}. Какая цена?",
  footer:"Индивидуальные туры по Грузии · до 6 пассажиров",
- tours:[["Казбеги и Гергети","Ананури, Гудаури и церковь Гергети у подножия Казбека.","1 день"],["Кахетия — винный край","Сигнахи, Бодбе, дегустация вина и Алазанская долина.","1 день"],["Мцхета и Уплисцихе","Древняя столица, монастырь Джвари и пещерный город.","1 день"],["Боржоми и Вардзия","Минеральные источники, крепость Рабат и пещерный монастырь.","1–2 дня"],["Сванетия — Местиа и Ушгули","Башни, ледники и одно из самых высоких сёл Европы.","2–4 дня"],["Батуми и Чёрное море","Приморский город, Ботанический сад, Мачахельское ущелье.","2–3 дня"],["Кутаиси и пещера Прометея","Гелати, пещера Прометея и каньон Мартвили.","1–2 дня"],["Экскурсия по Тбилиси","Старый город, серные бани и крепость Нарикала.","½ дня"]]
+ more:"Подробнее",route:"Маршрут",from_tb:"от Тбилиси",season_l:"Сезон",dur_l:"Длительность",dist_l:"Расстояние",book_this:"Забронировать этот тур",km:"км",hr:"ч",close:"Закрыть"
 },
 ka:{dir:"ltr",
  nav_about:"ჩემ შესახებ",nav_car:"მანქანა",nav_tours:"ტურები",nav_gallery:"ფოტოები",nav_reviews:"შეფასებები",nav_book:"დაჯავშნა",
@@ -480,7 +611,7 @@ ka:{dir:"ltr",
  send_wa:"გაგზავნა WhatsApp-ით",send_mail:"გაგზავნა ელ-ფოსტით",form_err:"გთხოვთ, მიუთითოთ სახელი და თარიღი.",
  msg_hello:"გამარჯობა! მინდა ტურის დაჯავშნა.",msg_ask:"გამარჯობა! მაინტერესებს ტური: {tour}. რა ღირს?",
  footer:"კერძო ტურები საქართველოში · 6 მგზავრამდე",
- tours:[["ყაზბეგი და გერგეტი","ანანური, გუდაური და გერგეტის სამება მყინვარწვერის ძირში.","1 დღე"],["კახეთი — ღვინის მხარე","სიღნაღი, ბოდბე, ღვინის დეგუსტაცია და ალაზნის ველი.","1 დღე"],["მცხეთა და უფლისციხე","ძველი დედაქალაქი, ჯვრის მონასტერი და კლდეში ნაკვეთი ქალაქი.","1 დღე"],["ბორჯომი და ვარძია","მინერალური წყლები, რაბათის ციხე და კლდის მონასტერი.","1–2 დღე"],["სვანეთი — მესტია და უშგული","კოშკები, მყინვარები და ევროპის ერთ-ერთი უმაღლესი სოფელი.","2–4 დღე"],["ბათუმი და შავი ზღვა","ზღვისპირა ქალაქი, ბოტანიკური ბაღი, მაჭახელას ხეობა.","2–3 დღე"],["ქუთაისი და პრომეთეს მღვიმე","გელათი, პრომეთეს მღვიმე და მარტვილის კანიონი.","1–2 დღე"],["თბილისის ტური","ძველი თბილისი, გოგირდის აბანოები და ნარიყალა.","½ დღე"]]
+ more:"დეტალურად",route:"მარშრუტი",from_tb:"თბილისიდან",season_l:"სეზონი",dur_l:"ხანგრძლივობა",dist_l:"მანძილი",book_this:"ამ ტურის დაჯავშნა",km:"კმ",hr:"სთ",close:"დახურვა"
 },
 ar:{dir:"rtl",
  nav_about:"من أنا",nav_car:"السيارة",nav_tours:"الجولات",nav_gallery:"الصور",nav_reviews:"الآراء",nav_book:"احجز",
@@ -504,7 +635,7 @@ ar:{dir:"rtl",
  send_wa:"إرسال عبر واتساب",send_mail:"إرسال بالبريد",form_err:"يرجى إدخال الاسم والتاريخ.",
  msg_hello:"مرحبًا! أود حجز جولة.",msg_ask:"مرحبًا! أنا مهتم بالجولة: {tour}. كم السعر؟",
  footer:"جولات خاصة في جورجيا · حتى 6 ركاب",
- tours:[["كازبيغي وغيرغيتي","أنانوري وغوداوري وكنيسة الثالوث في غيرغيتي عند سفح جبل كازبيك.","يوم واحد"],["كاخيتي — منطقة النبيذ","سيغناغي وبودبي وتذوق النبيذ وإطلالات وادي ألازاني.","يوم واحد"],["متسخيتا وأوبليستسيخي","العاصمة القديمة ودير جفاري ومدينة الكهوف.","يوم واحد"],["بورجومي وفاردزيا","الينابيع المعدنية وقلعة رباط ودير الكهوف.","1–2 أيام"],["سفانيتي — ميستيا وأوشغولي","أبراج قديمة وأنهار جليدية وإحدى أعلى القرى في أوروبا.","2–4 أيام"],["باتومي والبحر الأسود","مدينة ساحلية والحديقة النباتية ووادي ماتشاخيلا.","2–3 أيام"],["كوتايسي وكهف بروميثيوس","دير جيلاتي وكهف بروميثيوس ووادي مارتفيلي.","1–2 أيام"],["جولة في تبليسي","المدينة القديمة والحمامات الكبريتية وقلعة ناريكالا.","نصف يوم"]]
+ more:"التفاصيل",route:"المسار",from_tb:"من تبليسي",season_l:"الموسم",dur_l:"المدة",dist_l:"المسافة",book_this:"احجز هذه الجولة",km:"كم",hr:"ساعة",close:"إغلاق"
 },
 he:{dir:"rtl",
  nav_about:"עליי",nav_car:"הרכב",nav_tours:"סיורים",nav_gallery:"תמונות",nav_reviews:"המלצות",nav_book:"הזמנה",
@@ -528,7 +659,7 @@ he:{dir:"rtl",
  send_wa:"שליחה בוואטסאפ",send_mail:"שליחה במייל",form_err:"נא להזין שם ותאריך.",
  msg_hello:"שלום! אני רוצה להזמין סיור.",msg_ask:"שלום! אני מתעניין בסיור: {tour}. מה המחיר?",
  footer:"סיורים פרטיים בגאורגיה · עד 6 נוסעים",
- tours:[["קזבגי וגרגטי","אננורי, גודאורי וכנסיית השילוש בגרגטי למרגלות הר קזבק.","יום אחד"],["קחטי — אזור היין","סיגנאגי, בודבה, טעימות יין ונופי עמק אלזני.","יום אחד"],["מצחטה ואופליסציחה","הבירה העתיקה, מנזר ג'ווארי ועיר המערות.","יום אחד"],["בורג'ומי ווארדזיה","מעיינות מינרליים, מבצר רבאטי ומנזר המערות.","1–2 ימים"],["סוואנטי — מסטיה ואושגולי","מגדלים עתיקים, קרחונים ואחד הכפרים הגבוהים באירופה.","2–4 ימים"],["בטומי והים השחור","עיר חוף, הגן הבוטני ועמק מצ'חלה.","2–3 ימים"],["כותאיסי ומערת פרומתאוס","מנזר גלאטי, מערת פרומתאוס וקניון מרטווילי.","1–2 ימים"],["סיור בטביליסי","העיר העתיקה, מרחצאות הגופרית ומבצר נריקלה.","חצי יום"]]
+ more:"פרטים",route:"מסלול",from_tb:"מטביליסי",season_l:"עונה",dur_l:"משך",dist_l:"מרחק",book_this:"הזמינו את הסיור",km:"ק\"מ",hr:"שעות",close:"סגירה"
 }};
 
 /* ---------- logic ---------- */
@@ -539,10 +670,30 @@ const LINKS={wa:wa(""),tel:"tel:+"+digits,viber:"viber://chat?number=%2B"+digits
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const IMG_IC='<span class="ph-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg></span>';
 function getPhoto(path){return path.split(".").reduce((o,k)=>o&&o[k],CONFIG.photos)||"";}
-function paint(el,src,grad,label){
-  if(src){el.style.backgroundImage=`url("${src}")`;el.classList.remove("empty");el.innerHTML=el.innerHTML.replace(IMG_IC,"");}
-  else{el.style.backgroundImage=grad;el.classList.add("empty");el.dataset.label=label;if(!el.querySelector(".ph-ic"))el.insertAdjacentHTML("afterbegin",IMG_IC);}
+const IMG_OK={}, IMG_Q={};
+function loadImg(src,cb){
+  if(!src) return cb(false);
+  if(src in IMG_OK) return cb(IMG_OK[src]);
+  if(IMG_Q[src]) return IMG_Q[src].push(cb);
+  IMG_Q[src]=[cb];
+  const im=new Image();
+  const done=ok=>{IMG_OK[src]=ok;IMG_Q[src].forEach(f=>f(ok));delete IMG_Q[src];};
+  im.onload=()=>done(true); im.onerror=()=>done(false); im.src=src;
 }
+function pickImg(list,cb){ // პირველი ფოტო სიიდან, რომელიც ჩაიტვირთა
+  list=[].concat(list).filter(Boolean); let i=0;
+  const next=()=>{ if(i>=list.length) return cb(null); const s=list[i++]; loadImg(s,ok=>ok?cb(s):next()); };
+  next();
+}
+function paint(el,src,grad,label,onPick){
+  el.style.backgroundImage=grad; el.classList.add("empty"); el.dataset.label=label;
+  if(!el.querySelector(".ph-ic")) el.insertAdjacentHTML("afterbegin",IMG_IC);
+  pickImg(src,s=>{ if(onPick) onPick(s); if(!s) return;
+    el.style.backgroundImage=`url("${s}")`; el.classList.remove("empty");
+    const ic=el.querySelector(".ph-ic"); if(ic) ic.remove(); });
+}
+const TOUR_KEYS=["kazbegi","kakheti","mtskheta","borjomi","svaneti","batumi","kutaisi","tbilisi"];
+const tourSrc=i=>[CONFIG.photos.tours[i],WIKI[TOUR_KEYS[i]]&&WIKI[TOUR_KEYS[i]].src];
 let L="en";
 function render(){
   const t=T[L];
@@ -552,15 +703,25 @@ function render(){
   // static photos
   $$("[data-photo]").forEach(e=>paint(e,getPhoto(e.dataset.photo),e.dataset.grad,t.photo));
   // hero photo
-  const hero=$(".hero"); if(CONFIG.photos.hero){hero.style.backgroundImage=`url("${CONFIG.photos.hero}")`;hero.classList.add("has-photo");}
+  const hero=$(".hero"); pickImg([CONFIG.photos.hero,WIKI.hero.src],src=>{if(src){hero.style.backgroundImage=`url("${src}")`;hero.classList.add("has-photo");}});
   // tours
-  $("#tourList").innerHTML=t.tours.map((r,i)=>`<article class="tour"><div class="ph" data-ti="${i}"><span class="dur">${esc(r[2])}</span></div>
-    <div class="tour-body"><h3>${esc(r[0])}</h3><p>${esc(r[1])}</p>
-    <a class="ask" target="_blank" rel="noopener" href="${wa(t.msg_ask.replace("{tour}",r[0]))}"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-wa"/></svg>${esc(t.tour_ask)}</a></div></article>`).join("");
-  $$("[data-ti]").forEach(e=>paint(e,CONFIG.photos.tours[e.dataset.ti],TOUR_GRAD[e.dataset.ti],t.photo));
+  $("#tourList").innerHTML=TOURS[L].map((r,i)=>`<article class="tour"><button class="tour-open" data-open="${i}" aria-label="${esc(r.t)}"></button><div class="ph" data-ti="${i}"><span class="dur">${esc(r.d)}</span></div>
+    <div class="tour-body"><h3>${esc(r.t)}</h3><p>${esc(r.s)}</p>
+    <div class="tour-links"><span class="more">${esc(t.more)} ${t.dir==="rtl"?"←":"→"}</span>
+    <a class="ask" target="_blank" rel="noopener" href="${wa(t.msg_ask.replace("{tour}",r.t))}"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-wa"/></svg>${esc(t.tour_ask)}</a></div></div></article>`).join("");
+  $$("[data-open]").forEach(b=>b.onclick=()=>openTour(+b.dataset.open));
+  if(curTour!=null && $("#tourDlg").open) openTour(curTour);
+  $$("[data-ti]").forEach(e=>paint(e,tourSrc(+e.dataset.ti),TOUR_GRAD[e.dataset.ti],t.photo));
   // gallery
-  $("#galleryList").innerHTML=CONFIG.photos.gallery.map((_,i)=>`<div class="ph" data-gi="${i}"></div>`).join("");
-  $$("[data-gi]").forEach(e=>paint(e,CONFIG.photos.gallery[e.dataset.gi],GAL_GRAD[e.dataset.gi%GAL_GRAD.length],t.photo));
+  // გალერეაში ჩანს მხოლოდ ის ფოტოები, რომლებიც რეალურად ატვირთულია; თუ არცერთი — სექცია იმალება
+  if(!render.galDone){ render.galDone=true;
+    const list=CONFIG.photos.gallery, ok=new Array(list.length).fill(false); let left=list.length;
+    $("#gallery").hidden=true; $('.nav-links a[href="#gallery"]').hidden=true;
+    list.forEach((src,i)=>loadImg(src,good=>{ ok[i]=good; if(--left) return;
+      const shown=list.filter((_,j)=>ok[j]);
+      $("#galleryList").innerHTML=shown.map(src=>`<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="Berika Tours" loading="lazy"></a>`).join("");
+      $("#gallery").hidden=!shown.length; $('.nav-links a[href="#gallery"]').hidden=!shown.length; }));
+  }
   // reviews — sample-ები საჯაროდ არ ჩანს; თუ რეალური არ არის, სექცია იმალება
   const realReviews=CONFIG.reviews.filter(r=>!r.sample);
   $("#reviews").hidden=!realReviews.length; $('.nav-links a[href="#reviews"]').hidden=!realReviews.length;
@@ -569,9 +730,35 @@ function render(){
     <div class="who"><span class="av">${esc(r.name[0])}</span><div><b>${esc(r.name)}</b><span>${esc(r.from)}</span></div></div></div>`).join("");
   // form route options
   const sel=$("#f_route"),prev=sel.selectedIndex;
-  sel.innerHTML=t.tours.map(r=>`<option>${esc(r[0])}</option>`).join("")+`<option>${esc(t.fl_route_any)}</option>`;
+  sel.innerHTML=TOURS[L].map(r=>`<option>${esc(r.t)}</option>`).join("")+`<option>${esc(t.fl_route_any)}</option>`;
   if(prev>=0) sel.selectedIndex=prev;
   $("#lang").value=L;
+}
+let curTour=null;
+function openTour(i){
+  const t=T[L], r=TOURS[L][i], m=TOUR_META[i], dlg=$("#tourDlg"); curTour=i;
+  const chips=[[t.dur_l,r.d]];
+  if(m) chips.push([t.dist_l,`${m.km} ${t.km} · ~${m.h} ${t.hr} ${t.from_tb}`]);
+  chips.push([t.season_l,r.season]);
+  dlg.querySelector(".dlg-body").innerHTML=`
+    <div class="ph dlg-img" id="dlgImg"></div>
+    <div class="dlg-text">
+      <h3>${esc(r.t)}</h3>
+      <div class="chips">${chips.map(c=>`<div class="chip"><small>${esc(c[0])}</small><b>${esc(c[1])}</b></div>`).join("")}</div>
+      <p>${esc(r.l)}</p>
+      <h4>${esc(t.route)}</h4>
+      <ol class="stops">${r.stops.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
+      <div class="dlg-actions">
+        <a class="btn btn-wa" target="_blank" rel="noopener" href="${wa(t.msg_ask.replace("{tour}",r.t))}"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-wa"/></svg>${esc(t.tour_ask)}</a>
+        <button class="btn btn-ghost" id="dlgBook">${esc(t.book_this)}</button>
+      </div>
+    </div>`;
+  paint($("#dlgImg"),tourSrc(i),TOUR_GRAD[i],t.photo,src=>{
+    const w=WIKI[TOUR_KEYS[i]]; if(w && src===w.src) $("#dlgImg").insertAdjacentHTML("beforeend",`<a class="credit" href="${w.page}" target="_blank" rel="noopener">Photo: Wikimedia Commons</a>`); });
+  dlg.querySelector(".dlg-close").setAttribute("aria-label",t.close);
+  $("#dlgBook").onclick=()=>{dlg.close();$("#f_route").selectedIndex=i;$("#book").scrollIntoView();};
+  if(!dlg.open) dlg.showModal();
+  dlg.querySelector(".dlg-body").scrollTop=0;
 }
 function setLang(l){L=T[l]?l:"en";try{localStorage.setItem("lang",L)}catch(e){}render();}
 
@@ -588,10 +775,13 @@ function collect(){
 $("#sendWa").onclick=()=>{const m=collect(); if(m) window.open(wa(m),"_blank");};
 $("#sendMail").onclick=()=>{const m=collect(); if(m) location.href=LINKS.mail+"?subject="+encodeURIComponent("Berika Tours — "+$("#f_route").value)+"&body="+encodeURIComponent(m);};
 
+// photo credits (Wikimedia Commons licences require attribution)
+$("#credits").innerHTML="Photos: "+Object.values(WIKI).map((w,i)=>`<a href="${w.page}" target="_blank" rel="noopener">${i+1}</a>`).join(" · ")+" — Wikimedia Commons (CC BY / CC BY-SA)";
 // init
 $$("[data-cfg]").forEach(e=>e.textContent=CONFIG[e.dataset.cfg]);
 $$("[data-href]").forEach(e=>e.href=LINKS[e.dataset.href]);
 $("#lang").onchange=e=>setLang(e.target.value);
+$("#tourDlg").addEventListener("click",e=>{if(e.target.id==="tourDlg")e.target.close();});
 $("#yr").textContent=new Date().getFullYear();
 $("#f_date").min=new Date().toISOString().slice(0,10);
 let start=null; try{start=localStorage.getItem("lang")}catch(e){}
