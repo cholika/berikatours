@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://berikatours.ge/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://berikatours.ge/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://berikatours.ge/ru.html"/>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://berikatours.ge/ka.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://berikatours.ge/ar.html"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://berikatours.ge/he.html"/>
+  </url>
+  <url>
+    <loc>https://berikatours.ge/ru.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://berikatours.ge/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://berikatours.ge/ru.html"/>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://berikatours.ge/ka.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://berikatours.ge/ar.html"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://berikatours.ge/he.html"/>
+  </url>
+  <url>
+    <loc>https://berikatours.ge/ka.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://berikatours.ge/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://berikatours.ge/ru.html"/>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://berikatours.ge/ka.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://berikatours.ge/ar.html"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://berikatours.ge/he.html"/>
+  </url>
+  <url>
+    <loc>https://berikatours.ge/ar.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://berikatours.ge/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://berikatours.ge/ru.html"/>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://berikatours.ge/ka.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://berikatours.ge/ar.html"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://berikatours.ge/he.html"/>
+  </url>
+  <url>
+    <loc>https://berikatours.ge/he.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://berikatours.ge/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://berikatours.ge/ru.html"/>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://berikatours.ge/ka.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://berikatours.ge/ar.html"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://berikatours.ge/he.html"/>
+  </url>
+</urlset>
