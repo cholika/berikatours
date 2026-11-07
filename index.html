@@ -413,7 +413,7 @@ const CONFIG = {
   telegram: "+995 555 03 88 68",     // Telegram (ნომრით; თუ username აქვს, ჩაწერეთ "@username")
   email:    "info@berikatours.ge",   // ელ-ფოსტა (ფორმის განაცხადები აქ მოვა)
   years:    "15",                    // გამოცდილება
-  car:      "Mercedes-Benz Vito",    // მანქანის მოდელი
+  car:      "Toyota Highlander",     // მანქანის მოდელი
   flags:    "🇬🇪 🇬🇧 🇷🇺",            // ენები, რომლებზეც მძღოლი ლაპარაკობს
 
   // ფოტოები: ატვირთეთ GitHub-ზე ზუსტად ამ სახელებით — საიტზე თავისით გამოჩნდება.
@@ -447,6 +447,10 @@ const WIKI={
  kutaisi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Martvili_Canyon%2C_Georgia._2018_%281%29.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Martvili_Canyon%2C_Georgia._2018_%281%29.jpg"},
  tbilisi:{src:"https://commons.wikimedia.org/wiki/Special:FilePath/Tbilisi._Old_Town_with_the_Narikali_Fortress_in_the_background.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Tbilisi._Old_Town_with_the_Narikali_Fortress_in_the_background.jpg"}
 };
+WIKI.car1={src:"https://commons.wikimedia.org/wiki/Special:FilePath/2020_Toyota_Highlander_XLE_AWD%2C_front.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:2020_Toyota_Highlander_XLE_AWD%2C_front.jpg"};
+WIKI.car2={src:"https://commons.wikimedia.org/wiki/Special:FilePath/Toyota_Highlander_Hybrid_%28XU70%29_1X7A6356.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:Toyota_Highlander_Hybrid_%28XU70%29_1X7A6356.jpg"};
+WIKI.car3={src:"https://commons.wikimedia.org/wiki/Special:FilePath/2021_Toyota_Highlander_interior.jpg?width=1200",page:"https://commons.wikimedia.org/wiki/File:2021_Toyota_Highlander_interior.jpg"};
+const PHOTO_FALLBACK={"car.0":WIKI.car1.src,"car.1":WIKI.car2.src,"car.2":WIKI.car3.src};
 const TOUR_GRAD=[
  "linear-gradient(160deg,#5b7f99,#dfe7ee 55%,#6c8a5b)",
  "linear-gradient(160deg,#6e2a36,#b85a5a 50%,#d9b26f)",
@@ -553,7 +557,7 @@ en:{dir:"ltr",
  about_text:"I'm a professional driver and guide who loves Georgia. I'll show you the famous sights and the hidden corners most tourists never see — at your own pace.",
  about_c1:"Private tours — only you and your group",about_c2:"Airport pick-up and drop-off",about_c3:"We plan the route together — stop wherever you like",about_c4:"Hotel pick-up anywhere in Georgia",about_c5:"I speak Georgian, English and Russian",
  car_eyebrow:"My car",car_title:"Travel in comfort — {car}",car_text:"Clean, well-maintained and safe — perfect for families and groups of friends.",
- f1_t:"6 passengers",f1_d:"Spacious for a family or small group.",f2_t:"Air conditioning",f2_d:"Cool in summer, warm in winter.",f3_t:"Large trunk",f3_d:"Room for all suitcases.",f4_t:"Safety first",f4_d:"Insured car, careful mountain driving.",f5_t:"Wi-Fi & chargers",f5_d:"Stay online the whole way.",f6_t:"Airport transfers",f6_d:"Tbilisi, Kutaisi, Batumi.",
+ f1_t:"6 passengers",f1_d:"Spacious for a family or small group.",f2_t:"Air conditioning",f2_d:"Cool in summer, warm in winter.",f3_t:"Comfortable SUV",f3_d:"High clearance for mountain roads.",f4_t:"Safety first",f4_d:"Insured car, careful mountain driving.",f5_t:"Wi-Fi & chargers",f5_d:"Stay online the whole way.",f6_t:"Airport transfers",f6_d:"Tbilisi, Kutaisi, Batumi.",
  tours_eyebrow:"Popular destinations",tours_title:"Where shall we go?",tours_text:"Some of the most requested tours. Any route can be changed or combined.",
  tour_ask:"Ask the price",custom_text:"Have your own idea or planning a multi-day trip? Let's plan it together!",btn_plan:"Plan my trip",
  gal_eyebrow:"Gallery",gal_title:"Moments from our trips",
@@ -577,7 +581,7 @@ ru:{dir:"ltr",
  about_text:"Я профессиональный водитель и гид, влюблённый в Грузию. Покажу и знаменитые места, и уголки, о которых мало кто знает — в вашем темпе.",
  about_c1:"Индивидуальные туры — только вы и ваша группа",about_c2:"Встреча и проводы в аэропорту",about_c3:"Маршрут планируем вместе — остановки где захотите",about_c4:"Заберу из отеля в любом городе Грузии",about_c5:"Говорю на грузинском, английском и русском",
  car_eyebrow:"Мой автомобиль",car_title:"Комфортная поездка — {car}",car_text:"Чистый, ухоженный и безопасный — идеален для семьи или компании друзей.",
- f1_t:"6 пассажиров",f1_d:"Просторно для семьи или группы.",f2_t:"Кондиционер",f2_d:"Прохладно летом, тепло зимой.",f3_t:"Большой багажник",f3_d:"Место для всех чемоданов.",f4_t:"Безопасность",f4_d:"Страховка, аккуратное вождение в горах.",f5_t:"Wi-Fi и зарядки",f5_d:"Будьте онлайн всю дорогу.",f6_t:"Трансфер",f6_d:"Тбилиси, Кутаиси, Батуми.",
+ f1_t:"6 пассажиров",f1_d:"Просторно для семьи или группы.",f2_t:"Кондиционер",f2_d:"Прохладно летом, тепло зимой.",f3_t:"Комфортный внедорожник",f3_d:"Высокий клиренс для горных дорог.",f4_t:"Безопасность",f4_d:"Страховка, аккуратное вождение в горах.",f5_t:"Wi-Fi и зарядки",f5_d:"Будьте онлайн всю дорогу.",f6_t:"Трансфер",f6_d:"Тбилиси, Кутаиси, Батуми.",
  tours_eyebrow:"Популярные направления",tours_title:"Куда поедем?",tours_text:"Самые популярные туры. Любой маршрут можно изменить или объединить.",
  tour_ask:"Узнать цену",custom_text:"Есть своя идея или планируете многодневный тур? Спланируем вместе!",btn_plan:"Спланировать поездку",
  gal_eyebrow:"Галерея",gal_title:"Моменты наших поездок",
@@ -601,7 +605,7 @@ ka:{dir:"ltr",
  about_text:"ვარ პროფესიონალი მძღოლი-გიდი და მიყვარს საქართველო. გაჩვენებ ცნობილ ადგილებსაც და ისეთ კუთხეებსაც, რომლებსაც ტურისტები იშვიათად ხედავენ — შენს ტემპში.",
  about_c1:"ინდივიდუალური ტური — მხოლოდ შენ და შენი ჯგუფი",about_c2:"აეროპორტიდან / აეროპორტში ტრანსფერი",about_c3:"მარშრუტს ერთად ვგეგმავთ — გაჩერება სადაც გინდა",about_c4:"სასტუმროდან აგიყვან საქართველოს ნებისმიერ ქალაქში",about_c5:"ვსაუბრობ ქართულად, ინგლისურად და რუსულად",
  car_eyebrow:"ჩემი მანქანა",car_title:"კომფორტული მოგზაურობა — {car}",car_text:"სუფთა, მოვლილი და უსაფრთხო — იდეალური ოჯახისთვის ან მეგობრების ჯგუფისთვის.",
- f1_t:"6 მგზავრი",f1_d:"ფართო სალონი ოჯახისთვის ან ჯგუფისთვის.",f2_t:"კონდიციონერი",f2_d:"ზაფხულში გრილა, ზამთარში თბილა.",f3_t:"დიდი საბარგული",f3_d:"ადგილი ყველა ჩემოდნისთვის.",f4_t:"უსაფრთხოება",f4_d:"დაზღვეული მანქანა, ფრთხილი მართვა მთაში.",f5_t:"Wi-Fi და დამტენი",f5_d:"იყავი ონლაინ მთელი გზა.",f6_t:"ტრანსფერი",f6_d:"თბილისი, ქუთაისი, ბათუმი.",
+ f1_t:"6 მგზავრი",f1_d:"ფართო სალონი ოჯახისთვის ან ჯგუფისთვის.",f2_t:"კონდიციონერი",f2_d:"ზაფხულში გრილა, ზამთარში თბილა.",f3_t:"კომფორტული ჯიპი",f3_d:"მაღალი კლირენსი მთის გზებისთვის.",f4_t:"უსაფრთხოება",f4_d:"დაზღვეული მანქანა, ფრთხილი მართვა მთაში.",f5_t:"Wi-Fi და დამტენი",f5_d:"იყავი ონლაინ მთელი გზა.",f6_t:"ტრანსფერი",f6_d:"თბილისი, ქუთაისი, ბათუმი.",
  tours_eyebrow:"პოპულარული მიმართულებები",tours_title:"სად წავიდეთ?",tours_text:"ყველაზე მოთხოვნადი ტურები. ნებისმიერი მარშრუტის შეცვლა ან გაერთიანება შეიძლება.",
  tour_ask:"ფასის გაგება",custom_text:"გაქვს შენი იდეა ან გეგმავ რამდენიმედღიან ტურს? ერთად დავგეგმოთ!",btn_plan:"მოგზაურობის დაგეგმვა",
  gal_eyebrow:"გალერეა",gal_title:"კადრები ჩვენი მოგზაურობებიდან",
@@ -625,7 +629,7 @@ ar:{dir:"rtl",
  about_text:"أنا سائق ومرشد محترف أحب جورجيا. سأريك المعالم الشهيرة والأماكن الخفية التي نادرًا ما يراها السياح — بالوتيرة التي تناسبك.",
  about_c1:"جولات خاصة — أنت ومجموعتك فقط",about_c2:"استقبال وتوصيل من وإلى المطار",about_c3:"نخطط المسار معًا — نتوقف أينما تريد",about_c4:"الاستلام من الفندق في أي مدينة في جورجيا",about_c5:"أتحدث الجورجية والإنجليزية والروسية",
  car_eyebrow:"سيارتي",car_title:"سفر مريح — {car}",car_text:"نظيفة ومعتنى بها وآمنة — مثالية للعائلات ومجموعات الأصدقاء.",
- f1_t:"6 ركاب",f1_d:"مساحة واسعة للعائلة أو المجموعة.",f2_t:"تكييف",f2_d:"بارد صيفًا ودافئ شتاءً.",f3_t:"صندوق أمتعة كبير",f3_d:"مكان لجميع الحقائب.",f4_t:"الأمان أولًا",f4_d:"سيارة مؤمّنة وقيادة حذرة في الجبال.",f5_t:"واي فاي وشواحن",f5_d:"ابقَ متصلًا طوال الطريق.",f6_t:"نقل من المطار",f6_d:"تبليسي، كوتايسي، باتومي.",
+ f1_t:"6 ركاب",f1_d:"مساحة واسعة للعائلة أو المجموعة.",f2_t:"تكييف",f2_d:"بارد صيفًا ودافئ شتاءً.",f3_t:"سيارة دفع رباعي مريحة",f3_d:"ارتفاع عالٍ عن الأرض لطرق الجبال.",f4_t:"الأمان أولًا",f4_d:"سيارة مؤمّنة وقيادة حذرة في الجبال.",f5_t:"واي فاي وشواحن",f5_d:"ابقَ متصلًا طوال الطريق.",f6_t:"نقل من المطار",f6_d:"تبليسي، كوتايسي، باتومي.",
  tours_eyebrow:"وجهات شائعة",tours_title:"إلى أين نذهب؟",tours_text:"بعض الجولات الأكثر طلبًا. يمكن تعديل أي مسار أو دمجه.",
  tour_ask:"اسأل عن السعر",custom_text:"لديك فكرتك الخاصة أو تخطط لرحلة لعدة أيام؟ لنخطط لها معًا!",btn_plan:"خطط رحلتي",
  gal_eyebrow:"معرض الصور",gal_title:"لحظات من رحلاتنا",
@@ -649,7 +653,7 @@ he:{dir:"rtl",
  about_text:"אני נהג ומדריך מקצועי שאוהב את גאורגיה. אראה לכם את האתרים המפורסמים וגם פינות נסתרות שתיירים כמעט לא רואים — בקצב שלכם.",
  about_c1:"סיורים פרטיים — רק אתם והקבוצה שלכם",about_c2:"איסוף והסעה משדה התעופה",about_c3:"מתכננים את המסלול יחד — עוצרים איפה שרוצים",about_c4:"איסוף מהמלון בכל עיר בגאורגיה",about_c5:"אני מדבר גאורגית, אנגלית ורוסית",
  car_eyebrow:"הרכב שלי",car_title:"נסיעה בנוחות — {car}",car_text:"נקי, מטופל ובטוח — מושלם למשפחות ולקבוצות חברים.",
- f1_t:"6 נוסעים",f1_d:"מרווח למשפחה או לקבוצה קטנה.",f2_t:"מיזוג אוויר",f2_d:"קריר בקיץ, חמים בחורף.",f3_t:"תא מטען גדול",f3_d:"מקום לכל המזוודות.",f4_t:"בטיחות קודם כול",f4_d:"רכב מבוטח ונהיגה זהירה בהרים.",f5_t:"Wi-Fi ומטענים",f5_d:"מחוברים לאורך כל הדרך.",f6_t:"הסעות משדה התעופה",f6_d:"טביליסי, כותאיסי, בטומי.",
+ f1_t:"6 נוסעים",f1_d:"מרווח למשפחה או לקבוצה קטנה.",f2_t:"מיזוג אוויר",f2_d:"קריר בקיץ, חמים בחורף.",f3_t:"רכב שטח נוח",f3_d:"מרווח גחון גבוה לדרכי הרים.",f4_t:"בטיחות קודם כול",f4_d:"רכב מבוטח ונהיגה זהירה בהרים.",f5_t:"Wi-Fi ומטענים",f5_d:"מחוברים לאורך כל הדרך.",f6_t:"הסעות משדה התעופה",f6_d:"טביליסי, כותאיסי, בטומי.",
  tours_eyebrow:"יעדים פופולריים",tours_title:"לאן נוסעים?",tours_text:"חלק מהסיורים המבוקשים ביותר. אפשר לשנות או לשלב כל מסלול.",
  tour_ask:"בררו מחיר",custom_text:"יש לכם רעיון משלכם או מתכננים טיול של כמה ימים? בואו נתכנן יחד!",btn_plan:"תכננו את הטיול שלי",
  gal_eyebrow:"גלריה",gal_title:"רגעים מהטיולים שלנו",
@@ -701,7 +705,7 @@ function render(){
   const fill=s=>s.replace("{name}",CONFIG.name[L]||CONFIG.name.en).replace("{car}",CONFIG.car);
   $$("[data-i]").forEach(e=>{const v=t[e.dataset.i]; if(v!=null) e.textContent=fill(v);});
   // static photos
-  $$("[data-photo]").forEach(e=>paint(e,getPhoto(e.dataset.photo),e.dataset.grad,t.photo));
+  $$("[data-photo]").forEach(e=>paint(e,[getPhoto(e.dataset.photo),PHOTO_FALLBACK[e.dataset.photo]],e.dataset.grad,t.photo));
   // hero photo
   const hero=$(".hero"); pickImg([CONFIG.photos.hero,WIKI.hero.src],src=>{if(src){hero.style.backgroundImage=`url("${src}")`;hero.classList.add("has-photo");}});
   // tours
